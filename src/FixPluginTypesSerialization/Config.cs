@@ -11,7 +11,7 @@ namespace FixPluginTypesSerialization
     internal static class Config
     {
         private static readonly ConfigFile _config =
-            new(Path.Combine(Paths.ConfigPath, nameof(FixPluginTypesSerialization) + ".cfg"),
+            new(Path.Combine(Paths.ConfigPath, nameof(FixPluginTypesSerialization) + "Debug.cfg"),
                 true);
 
         internal static ConfigEntry<string> UnityVersionOverride =
