@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FixPluginTypesSerialization.Util
 {
@@ -20,6 +18,11 @@ namespace FixPluginTypesSerialization.Util
 
         private static Dictionary<string, long> Get64(Version unityVersion)
         {
+            if (unityVersion is { Major: 2022, Minor: 3, Build: 9 })
+            {
+                return CreateOffsets(0x76C0C0, 0x76BBF0, 0x0, 0x781360, 0x683330, 0x648220, 0x3556D0, 0x1BFBA40);
+            }
+
             switch (unityVersion.Major)
             {
                 case 5:
