@@ -1,16 +1,12 @@
-﻿using FixPluginTypesSerialization.Patchers;
+﻿using System;
+using System.IO;
+using System.Runtime.InteropServices;
 using FixPluginTypesSerialization.UnityPlayer.Structs.Default;
 using FixPluginTypesSerialization.Util;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
-namespace FixPluginTypesSerialization.UnityPlayer.Structs.v2023.v1
+namespace FixPluginTypesSerialization.UnityPlayer.Structs.v2022.v3
 {
-    [ApplicableToUnityVersionsSince("2023.1.0")]
+    [ApplicableToUnityVersionsSince("2022.3.0")]
     public class AbsolutePathString : IAbsolutePathString
     {
         public AbsolutePathString()
@@ -37,7 +33,7 @@ namespace FixPluginTypesSerialization.UnityPlayer.Structs.v2023.v1
             var pathNameStr = _this->union.embedded.flags.IsEmbedded
                 ? Marshal.PtrToStringAnsi((IntPtr)_this->union.embedded.data)
                 : Marshal.PtrToStringAnsi(_this->union.heap.data, (int)_this->union.heap.size);
-            
+
             var fileNameStr = Path.GetFileName(pathNameStr);
             var newPathIndex = FixPluginTypesSerializationPatcher.PluginNames.IndexOf(fileNameStr);
             if (newPathIndex == -1)
@@ -83,7 +79,7 @@ namespace FixPluginTypesSerialization.UnityPlayer.Structs.v2023.v1
             else
             {
                 return Marshal.PtrToStringAnsi(_this->union.heap.data, (int)_this->union.heap.size);
-            };
+            }
         }
     }
 }
