@@ -13,11 +13,17 @@ namespace FixPluginTypesSerialization.Util
             NullIfOutOfMemory
         };
 
-        private delegate IntPtr MallocInternalFunc(ulong size, ulong allign, int label, AllocateOptions allocateOptions, IntPtr file, int line);
+        public struct MemLabelId
+        {
+            public int id;
+            public nint rootref; // only used in debug assembly
+        }
+
+        private unsafe delegate IntPtr MallocInternalFunc(ulong size, ulong align, MemLabelId* label, AllocateOptions allocateOptions, IntPtr file, int line);
         private static MallocInternalFunc mallocInternal;
 
         private delegate void FreeAllocInternalV1Func(IntPtr ptr, int label);
-        private delegate void FreeAllocInternalV2Func(IntPtr ptr, int label, IntPtr file, int line);
+        private unsafe delegate void FreeAllocInternalV2Func(IntPtr ptr, MemLabelId* label, IntPtr file, int line);
         private static FreeAllocInternalV1Func freeAllocInternalV1;
         private static FreeAllocInternalV2Func freeAllocInternalV2;
 
@@ -67,7 +73,13 @@ namespace FixPluginTypesSerialization.Util
             //Ansi string might be longer than managed
             for (var c = (byte*)strPtr + length; *c != 0; c++, length++) { }
 
-            var allocPtr = mallocInternal(length + 1, 0x10, label, AllocateOptions.NullIfOutOfMemory, IntPtr.Zero, 0);
+            var labelStr = new MemLabelId
+            {
+                id = label,
+                rootref = IntPtr.Zero
+            };
+
+            var allocPtr = mallocInternal(length + 1, 0x10, &labelStr, AllocateOptions.None, IntPtr.Zero, 0);
 
             for (var i = 0ul; i <= length; i++)
             {
@@ -79,16 +91,17 @@ namespace FixPluginTypesSerialization.Util
             return allocPtr;
         }
 
-        public static IntPtr MallocInternal(ulong size, ulong allign, int label)
+        public static unsafe void FreeAllocInternal(IntPtr ptr, int label)
         {
-            return mallocInternal(size, allign, label, AllocateOptions.NullIfOutOfMemory, IntPtr.Zero, 0);
-        }
+            var labelId = new MemLabelId
+            {
+                id = label,
+                rootref = IntPtr.Zero
+            };
 
-        public static void FreeAllocInternal(IntPtr ptr, int label)
-        {
             if (UseRightStructs.UnityVersion >= new Version(2019, 3))
             {
-                freeAllocInternalV2(ptr, label, IntPtr.Zero, 0);
+                freeAllocInternalV2(ptr, &labelId, IntPtr.Zero, 0);
             }
             else
             {
