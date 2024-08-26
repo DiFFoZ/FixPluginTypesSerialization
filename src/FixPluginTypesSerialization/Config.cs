@@ -23,7 +23,7 @@ namespace FixPluginTypesSerialization
 
         internal static ConfigEntry<FunctionOffsetLookup> FunctionOffsetLookupType =
             _config.Bind("Overrides", nameof(FunctionOffsetLookupType),
-                FunctionOffsetLookup.PreferPdb,
+                FunctionOffsetLookup.PreferSupportedVersions,
                 $"{nameof(FunctionOffsetLookup.PreferSupportedVersions)} - using values for supported versions, " +
                 "if a version is not supported trying to use pdb." + Environment.NewLine +
                 $"{nameof(FunctionOffsetLookup.PreferPdb)} - using pdb, it will be downloaded from  Unity symbols server," +

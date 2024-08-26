@@ -79,7 +79,7 @@ namespace FixPluginTypesSerialization.Util
                 rootref = IntPtr.Zero
             };
 
-            var allocPtr = mallocInternal(length + 1, 0x10, &labelStr, AllocateOptions.None, IntPtr.Zero, 0);
+            var allocPtr = mallocInternal(length + 1, 0x10, &labelStr, AllocateOptions.NullIfOutOfMemory, IntPtr.Zero, 0);
 
             for (var i = 0ul; i <= length; i++)
             {
