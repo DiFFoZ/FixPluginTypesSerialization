@@ -1,9 +1,13 @@
-﻿using Microsoft.Deployment.Compression.Cab;
+﻿#if NET481_OR_GREATER
+#define HTTPCLIENT_AVAILABLE
+#endif
+
+using Microsoft.Deployment.Compression.Cab;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-#if NETSTANDARD2_0_OR_GREATER
+#if HTTPCLIENT_AVAILABLE
 using System.Net.Http;
 using System.Threading.Tasks;
 #endif
@@ -12,7 +16,7 @@ namespace FixPluginTypesSerialization.Util
 {
     internal class MiniPdbReader
     {
-#if NETSTANDARD2_0_OR_GREATER
+#if HTTPCLIENT_AVAILABLE
         private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromMinutes(5) };
 #else
         private static readonly WebClientWithTimeout _webClient = new();
@@ -28,14 +32,14 @@ namespace FixPluginTypesSerialization.Util
         private static byte[] DownloadFromWeb(string url)
         {
             Log.Info("Downloading : " + url + "\nThis pdb file is needed for the plugin to work properly. This may take a while, relax, modding is coming.");
-#if NETSTANDARD2_0_OR_GREATER
+#if HTTPCLIENT_AVAILABLE
             try
             {
                 var httpResponse = _httpClient.GetAsync(url).GetAwaiter().GetResult();
 
                 Log.Info("Status Code : " + httpResponse.StatusCode);
 
-                if (httpResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                if (httpResponse.StatusCode != HttpStatusCode.OK)
                 {
                     return null;
                 }
@@ -51,7 +55,7 @@ namespace FixPluginTypesSerialization.Util
             try
             {
                 return _webClient.DownloadData(url);
-        }
+            }
             catch (WebException)
             {
                 Log.Info("Could not download pdb. Plugin may not work correctly.");
@@ -166,7 +170,7 @@ namespace FixPluginTypesSerialization.Util
             }
         }
 
-#if NET35 || NET40
+#if !HTTPCLIENT_AVAILABLE
         private class WebClientWithTimeout : WebClient
         {
             public TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(5);
