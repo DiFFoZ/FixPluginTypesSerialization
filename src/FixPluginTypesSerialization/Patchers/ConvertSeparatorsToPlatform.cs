@@ -21,7 +21,7 @@ namespace FixPluginTypesSerialization.Patchers
 
         protected override BytePattern[] PdbPatterns { get; } =
         {
-            Encoding.ASCII.GetBytes(nameof(ConvertSeparatorsToPlatform))
+            Encoding.ASCII.GetBytes(nameof(ConvertSeparatorsToPlatform) + "@@")
         };
 
         protected override unsafe void Apply(IntPtr from)
