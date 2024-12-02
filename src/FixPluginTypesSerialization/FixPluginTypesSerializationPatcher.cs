@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using FixPluginTypesSerialization.Patchers;
 using FixPluginTypesSerialization.Util;
+using HarmonyLib;
 using Mono.Cecil;
 
 namespace FixPluginTypesSerialization
@@ -19,6 +20,8 @@ namespace FixPluginTypesSerialization
             .Where(f => IsNetAssembly(f))
             .ToList();
         public static List<string> PluginNames = PluginPaths.Select(p => Path.GetFileName(p)).ToList();
+
+        private static readonly Harmony s_Harmony = new Harmony(nameof(FixPluginTypesSerializationPatcher));
 
         public static bool IsNetAssembly(string fileName)
         {
@@ -38,22 +41,12 @@ namespace FixPluginTypesSerialization
         {
         }
 
-        public static void Initialize()
+        public static void Finish()
         {
-            Log.Init();
-
-            try
-            {
-                InitializeInternal();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Failed to initialize plugin types serialization fix: ({e.GetType()}) {e.Message}. Some plugins may not work properly.");
-                Log.Error(e);
-            }
+            s_Harmony.PatchAll(typeof(FixPluginTypesSerializationPatcher).Assembly);
         }
 
-        private static void InitializeInternal()
+        internal static void InitializeInternal()
         {
             DetourUnityPlayer();
         }
