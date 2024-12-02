@@ -96,7 +96,7 @@ namespace FixPluginTypesSerialization.Util
 
         private bool DownloadUnityPdb(PeReader peReader)
         {
-            const string unitySymbolServer = "http://symbolserver.unity3d.com";
+            const string unitySymbolServer = "https://symbolserver.unity3d.com";
 
             var pdbCompressedPath = peReader.RsdsPdbFileName.TrimEnd('b') + '_';
             var pdbDownloadUrl = $"{unitySymbolServer}/{peReader.RsdsPdbFileName}/{peReader.PdbGuid}/{pdbCompressedPath}";
