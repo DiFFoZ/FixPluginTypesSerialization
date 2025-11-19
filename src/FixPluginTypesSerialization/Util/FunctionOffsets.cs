@@ -18,9 +18,9 @@ namespace FixPluginTypesSerialization.Util
 
         private static Dictionary<string, long> Get64(Version unityVersion)
         {
-            if (unityVersion is { Major: 2022, Minor: 3, Build: 9 })
+            if (unityVersion is { Major: 2022, Minor: 3, Build: 62 })
             {
-                return CreateOffsets(0xFC5BE0, 0xFC9DF0, 0x00, 0xFDF7A0, 0xDDA6B0, 0x4C4340, 0x4C4310, 0x2BB8740);
+                return CreateOffsets(0x100C800, 0x00, 0xD8A540, 0x1026020, 0xD5DCD0, 0x4CFF70, 0x4CFF40, 0x2C43900);
             }
 
             switch (unityVersion.Major)
